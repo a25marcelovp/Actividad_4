@@ -71,7 +71,7 @@ Si todo ha ido bien, verás el estado `active (running)`. Para salir de la panta
 ### 3.2 Gestionar el servicio
 
 | Comando | Función | Cuándo usarlo |
-|---------|---------|---------------|
+| --- | --- | --- |
 | `sudo systemctl start apache2` | Inicia el servicio | Si está parado |
 | `sudo systemctl stop apache2` | Detiene el servicio | Para mantenimiento |
 | `sudo systemctl restart apache2` | Reinicia el servicio completo | Tras instalar o quitar módulos |
@@ -101,7 +101,7 @@ Después, en **PowerShell de Windows**, ejecuta `wsl --shutdown` y vuelve a abri
 **Opción B: usar `service`.** Sustituye `systemctl` por `service` con este orden:
 
 | En lugar de... | Usa... |
-|----------------|--------|
+| --- | --- |
 | `sudo systemctl start apache2` | `sudo service apache2 start` |
 | `sudo systemctl stop apache2` | `sudo service apache2 stop` |
 | `sudo systemctl restart apache2` | `sudo service apache2 restart` |
@@ -115,7 +115,7 @@ Después, en **PowerShell de Windows**, ejecuta `wsl --shutdown` y vuelve a abri
 Apache en Ubuntu reparte su configuración en varios archivos y directorios. Conocerlos evita perder tiempo buscando.
 
 | Ruta | Contenido | Para qué sirve |
-|------|-----------|----------------|
+| --- | --- | --- |
 | `/etc/apache2/apache2.conf` | Configuración principal | Ajustes generales; incluye al resto de archivos |
 | `/etc/apache2/ports.conf` | Puertos de escucha | Define en qué puertos escucha Apache (80, 443) |
 | `/etc/apache2/sites-available/` | Sitios disponibles | Archivos de configuración de cada sitio |
@@ -245,7 +245,7 @@ sudo apache2ctl -S
 Apache es *modular*: las funciones extra se añaden activando módulos.
 
 | Módulo | Función | Comando de activación |
-|--------|---------|-----------------------|
+| --- | --- | --- |
 | `rewrite` | Reescribe URLs | `sudo a2enmod rewrite` |
 | `ssl` | Permite HTTPS | `sudo a2enmod ssl` |
 | `headers` | Modifica cabeceras HTTP | `sudo a2enmod headers` |
@@ -332,7 +332,7 @@ Después podrás abrir `http://misitio.local` en el navegador.
 ## 10. Resolución de problemas
 
 | Problema | Causa probable | Solución |
-|----------|----------------|----------|
+| --- | --- | --- |
 | La página no carga | Servicio parado | `sudo systemctl start apache2` |
 | Error al recargar (`AH00526` u otro) | Sintaxis incorrecta en una directiva | Revisar la línea que indica el error y ejecutar `sudo apache2ctl configtest` |
 | Aviso `AH00558` (nombre de servidor) | Falta un `ServerName` global; es inofensivo | Ver el bloque de código de abajo |

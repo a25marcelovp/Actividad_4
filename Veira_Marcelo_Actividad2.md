@@ -1,5 +1,5 @@
 # Guía completa: instalación y configuración de un servidor web Apache en Ubuntu
-
+ls -R
 Esta guía explica cómo instalar, configurar, comprobar y mantener un **servidor web Apache** en Ubuntu. Está pensada para una persona que nunca ha montado un servidor web y necesita seguir el procedimiento paso a paso, copiando y pegando los comandos.
 
 ## Índice
@@ -21,7 +21,8 @@ Esta guía explica cómo instalar, configurar, comprobar y mantener un **servido
 8. [Cortafuegos y seguridad básica](#8-cortafuegos-y-seguridad-básica)
 9. [Comprobación](#9-comprobación)
 10. [Resolución de problemas](#10-resolución-de-problemas)
-11. [Referencias](#11-referencias)
+11. [HTTPS con certificado autofirmado](#11-https-con-certificado-autofirmado)
+12. [Referencias](#12-referencias)
 
 ---
 
@@ -346,8 +347,67 @@ echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.co
 sudo a2enconf servername
 sudo systemctl reload apache2
 ```
+## 11. HTTPS con certificado autofirmado
 
-## 11. Referencias
+HTTPS cifra la comunicación entre el navegador y el servidor. Para pruebas se puede usar un **certificado autofirmado**: funciona igual, pero el navegador avisará de que no lo emite una autoridad de confianza. Para un sitio real se usaría un certificado de una autoridad, como Let's Encrypt.
+
+| Archivo | Ruta | Función |
+| --- | --- | --- |
+| Certificado | `/etc/ssl/certs/misitio.crt` | Parte pública, la que recibe el navegador |
+| Clave privada | `/etc/ssl/private/misitio.key` | Parte secreta, nunca se comparte |
+
+### 11.1 Generar el certificado
+
+1. Activa el módulo `ssl`.
+2. Genera el certificado y la clave, válidos durante un año.
+
+```bash
+sudo a2enmod ssl
+```
+
+```bash
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout /etc/ssl/private/misitio.key \
+  -out /etc/ssl/certs/misitio.crt \
+  -subj "/CN=misitio.local"
+```
+
+### 11.2 Crear el sitio seguro
+
+Crea el archivo de configuración con este bloque (cópialo entero, de `sudo tee` hasta `EOF`):
+
+```bash
+sudo tee /etc/apache2/sites-available/misitio-ssl.conf > /dev/null <<'EOF'
+<VirtualHost *:443>
+    ServerName misitio.local
+    DocumentRoot /var/www/misitio
+
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/certs/misitio.crt
+    SSLCertificateKeyFile /etc/ssl/private/misitio.key
+
+    ErrorLog ${APACHE_LOG_DIR}/misitio_ssl_error.log
+    CustomLog ${APACHE_LOG_DIR}/misitio_ssl_access.log combined
+</VirtualHost>
+EOF
+```
+
+### 11.3 Activar y comprobar
+
+```bash
+sudo a2ensite misitio-ssl.conf
+sudo apache2ctl configtest
+sudo systemctl restart apache2
+```
+
+Comprueba que responde por HTTPS (la opción `-k` acepta el certificado autofirmado):
+
+```bash
+curl -k --resolve misitio.local:443:127.0.0.1 https://misitio.local
+```
+
+La respuesta debe ser `<h1>Bienvenido a misitio</h1>`. Si usas `ufw`, permite el puerto 443 con `sudo ufw allow 'Apache Secure'`.
+## 12. Referencias
 
 - [Documentación oficial de Apache 2.4](https://httpd.apache.org/docs/2.4/)
 - [Ubuntu Server: Apache](https://ubuntu.com/server/docs/web-servers-apache)

@@ -249,6 +249,10 @@ Apache es *modular*: las funciones extra se añaden activando módulos.
 | `rewrite` | Reescribe URLs | `sudo a2enmod rewrite` |
 | `ssl` | Permite HTTPS | `sudo a2enmod ssl` |
 | `headers` | Modifica cabeceras HTTP | `sudo a2enmod headers` |
+| `deflate` | Comprime las respuestas para que la web cargue más rápido | `sudo a2enmod deflate` |
+| `expires` | Indica al navegador cuánto tiempo puede guardar en caché cada archivo | `sudo a2enmod expires` |
+| `status` | Muestra el estado del servidor en `/server-status` (por defecto, solo desde el propio equipo) | `sudo a2enmod status` |
+| `proxy` | Permite que Apache reenvíe peticiones a otro servidor | `sudo a2enmod proxy` |
 
 Flujo habitual para activar, desactivar y listar módulos:
 
@@ -263,6 +267,16 @@ sudo systemctl restart apache2
 - `a2enmod` activa un módulo y `a2dismod` lo desactiva. El ejemplo activa `rewrite`, comprueba que aparece cargado y lo vuelve a desactivar.
 - Tras activar o desactivar módulos hay que **reiniciar** Apache (`restart`, no basta con `reload`).
 - `apache2ctl -M` lista los módulos cargados; con `| grep rewrite` se filtra solo el que interesa.
+
+Para saber qué módulos hay instalados y cuáles están activos:
+
+```bash
+ls /etc/apache2/mods-available/
+ls /etc/apache2/mods-enabled/
+```
+
+`mods-available` contiene todos los módulos que se pueden activar, y `mods-enabled` solo los que están funcionando (enlaces simbólicos, como en los sitios). Si un módulo aparece solo en `available`, existe pero está desactivado.
+
 
 > **Cuidado:** Ubuntu protege los módulos *esenciales* (por ejemplo `autoindex`, `dir` o `mime`). Si intentas desactivar uno con `a2dismod`, muestra una advertencia y pide escribir una frase de confirmación. **No la escribas**: responde cualquier otra cosa y la operación se cancela (`Aborting`). Desactivar un módulo esencial puede romper Apache.
 

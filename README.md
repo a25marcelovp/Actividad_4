@@ -431,3 +431,11 @@ La respuesta debe ser `<h1>Bienvenido a misitio</h1>`. Si usas `ufw`, permite el
 Esta documentación se ha elaborado utilizando Markdown.
 El control de versiones se realiza mediante Git
 y el repositorio remoto se encuentra alojado en GitHub.
+
+## Próximas mejoras
+
+- Añadir una sección sobre **certificados de Let's Encrypt con Certbot**, para sustituir el certificado autofirmado por uno válido en un servidor con dominio real.
+- Incluir una sección de **registros (logs) y su análisis**, explicando cómo leer `access.log` y `error.log` y cómo rotarlos con `logrotate`.
+- Documentar la configuración de **autenticación básica y control de acceso** (`.htpasswd`, `Require`) para proteger directorios concretos.
+- Ampliar la guía con **Apache como proxy inverso** delante de una aplicación (por ejemplo, Node.js o Python), ya que solo se menciona el módulo.
+- Añadir una tabla de **errores frecuentes** con su causa y solución, basada en los problemas reales que aparecen al probar la guía en WSL.

@@ -426,3 +426,8 @@ La respuesta debe ser `<h1>Bienvenido a misitio</h1>`. Si usas `ufw`, permite el
 - [Documentación oficial de Apache 2.4](https://httpd.apache.org/docs/2.4/)
 - [Ubuntu Server: Apache](https://ubuntu.com/server/docs/web-servers-apache)
 - [Guía de sintaxis Markdown](https://www.markdownguide.org/basic-syntax/)
+
+## Información del proyecto
+Esta documentación se ha elaborado utilizando Markdown.
+El control de versiones se realiza mediante Git
+y el repositorio remoto se encuentra alojado en GitHub.

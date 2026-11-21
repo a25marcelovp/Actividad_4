@@ -427,6 +427,51 @@ La respuesta debe ser `<h1>Bienvenido a misitio</h1>`. Si usas `ufw`, permite el
 - [Ubuntu Server: Apache](https://ubuntu.com/server/docs/web-servers-apache)
 - [Guía de sintaxis Markdown](https://www.markdownguide.org/basic-syntax/)
 
+## Recomendaciones de seguridad
+
+Además de las recomendaciones básicas del [apartado 8](#8-cortafuegos-y-seguridad-básica), conviene aplicar estas tres medidas a los sitios creados en esta guía.
+
+**1. Proteger la clave privada del certificado.** La clave `/etc/ssl/private/misitio.key` (apartado 11) es la parte secreta de HTTPS: quien la consiga podría suplantar al sitio. Solo debe poder leerla `root`, y nunca debe copiarse a otro equipo ni subirse al repositorio de Git.
+
+```bash
+sudo chown root:root /etc/ssl/private/misitio.key
+sudo chmod 600 /etc/ssl/private/misitio.key
+sudo ls -l /etc/ssl/private/misitio.key
+```
+
+El último comando debe mostrar `-rw-------` y `root root`.
+
+**2. Desactivar el listado de directorios.** Si una carpeta no tiene `index.html`, Apache puede mostrar la lista de sus archivos a cualquier visitante. Para evitarlo, añade este bloque dentro del `<VirtualHost>` de `/etc/apache2/sites-available/misitio.conf`:
+
+```apache
+<Directory /var/www/misitio>
+    Options -Indexes
+</Directory>
+```
+
+Después ejecuta `sudo apache2ctl configtest` y `sudo systemctl reload apache2`. No desactives el módulo `autoindex` (es esencial, ver apartado 7): se controla con esta opción.
+
+**3. Ocultar la versión de Apache.** Por defecto, Apache muestra su versión y el sistema operativo en las cabeceras y en las páginas de error, y eso ayuda a un atacante a buscar fallos conocidos. Edita `/etc/apache2/conf-available/security.conf`:
+
+```bash
+sudo nano /etc/apache2/conf-available/security.conf
+```
+
+y deja estas dos líneas así:
+
+```apache
+ServerTokens Prod
+ServerSignature Off
+```
+
+Tras recargar el servicio, comprueba el resultado con:
+
+```bash
+curl -sI http://localhost | grep Server
+```
+
+Debe aparecer solo `Server: Apache`, sin número de versión.
+
 ## Información del proyecto
 Esta documentación se ha elaborado utilizando Markdown.
 El control de versiones se realiza mediante Git

@@ -1,2 +1,3 @@
 # Prueba de conflictos
-Este documento explica cómo funciona Git.
+Este documento explica cómo Git permite trabajar
+con distintas ramas.
